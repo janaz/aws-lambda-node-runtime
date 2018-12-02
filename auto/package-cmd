@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 cd "${DIR}/.."
 
 tmp_dir="tmp"
-stage_dir="stage"
+stage_dir="stage/work"
 node_dir="${tmp_dir}/${NODE_VERSION}"
 node_archive="node-v${NODE_VERSION}-linux-x64.tar.xz"
 
@@ -25,12 +25,12 @@ mkdir -p "${node_dir}"
 tar -xJ -f "${tmp_dir}/${node_archive}" --strip 1 -C "${node_dir}"
 
 #prepare staging dir
+rm -rf "${stage_dir}" "${stage_dir}"/../layer.zip
 mkdir -p "${stage_dir}"
-rm -rf "${stage_dir}"/*
 cp -a package.json yarn.lock src/* "${node_dir}"/bin/node "${stage_dir}/"
 
 #install deps and create archive
 cd "${stage_dir}"
 yarn install --frozen-lockfile --production --no-bin-links --ignore-optional
 rm -f yarn.lock package.json
-7za a -mx9 -r layer.zip .
+7za a -mx9 -r ../layer.zip .
