@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -ex
+
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+cd "${DIR}/.."
+
+tmp_dir="tmp"
+stage_dir="stage"
+node_dir="${tmp_dir}/${NODE_VERSION}"
+node_archive="node-v${NODE_VERSION}-linux-x64.tar.xz"
+
+if [ ! -f "${tmp_dir}/${node_archive}" ]; then
+  mkdir -p "${tmp_dir}"
+  curl -L -o "${tmp_dir}/${node_archive}" "https://nodejs.org/dist/v10.14.1/${node_archive}"
+fi
+
+#check sha256
+echo "${SHA256}  ${tmp_dir}/${node_archive}" | sha256sum -c -
+
+#unpack node
+rm -rf "${node_dir}"
+mkdir -p "${node_dir}"
+tar -xJz -f "${tmp_dir}/${node_archive}" --strip 1 -C "${node_dir}"
+
+#prepare staging dir
+mkdir -p "${stage_dir}"
+rm -rf "${stage_dir}/*"
+cp -a package.json yarn.lock src/* "${node_dir}"/bin/node "${stage_dir}/"
+
+#install deps and create archive
+cd "${stage_dir}"
+yarn install --frozen-lockfile --production --no-bin-links --ignore-optional
+rm -f yarn.lock
+7za a -mx9 -r layer.zip .
