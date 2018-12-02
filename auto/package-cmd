@@ -13,7 +13,7 @@ node_archive="node-v${NODE_VERSION}-linux-x64.tar.xz"
 
 if [ ! -f "${tmp_dir}/${node_archive}" ]; then
   mkdir -p "${tmp_dir}"
-  curl -L -o "${tmp_dir}/${node_archive}" "https://nodejs.org/dist/v10.14.1/${node_archive}"
+  curl -L -o "${tmp_dir}/${node_archive}" "https://nodejs.org/dist/v${NODE_VERSION}/${node_archive}"
 fi
 
 #check sha256
