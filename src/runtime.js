@@ -161,7 +161,7 @@ const processNextRequest = () => {
         awsRequestId: requestId,
         logGroupName: process.env.AWS_LAMBDA_LOG_GROUP_NAME,
         logStreamName: process.env.AWS_LAMBDA_LOG_STREAM_NAME,
-        callbackWaitsForEmptyEventLoop: false,
+        callbackWaitsForEmptyEventLoop: true,
         identity: headers['lambda-runtime-cognito-identity'],
         clientContext: headers['lambda-runtime-client-context'],
       }
