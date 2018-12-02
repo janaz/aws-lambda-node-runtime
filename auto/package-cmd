@@ -22,7 +22,7 @@ echo "${SHA256}  ${tmp_dir}/${node_archive}" | sha256sum -c -
 #unpack node
 rm -rf "${node_dir}"
 mkdir -p "${node_dir}"
-tar -xJz -f "${tmp_dir}/${node_archive}" --strip 1 -C "${node_dir}"
+tar -xJ -f "${tmp_dir}/${node_archive}" --strip 1 -C "${node_dir}"
 
 #prepare staging dir
 mkdir -p "${stage_dir}"
