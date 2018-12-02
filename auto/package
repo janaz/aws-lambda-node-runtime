@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -ex
+
+export NODE_VERSION=10.14.1
+export SHA256=b65e735cdf61fb80f114c498c8955efe8e096e4b3e173281d68aa9d2c05b0f97
+
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+cd "${DIR}/.."
+
+docker-compose build
+docker-compose run --rm \
+  -e NODE_VERSION -e SHA256 \
+  package

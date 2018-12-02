@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+  package:
+    build: .
+    environment:
+      YARN_CACHE_FOLDER: /tmp/yarn-cache
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - yarn-cache:/tmp/yarn-cache
+    working_dir: /app
+    command: auto/package-cmd
+
+  dev:
+    build: .
+    environment:
+      YARN_CACHE_FOLDER: /tmp/yarn-cache
+      AWS_LAMBDA_RUNTIME_API: runtime-api:3000
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - yarn-cache:/tmp/yarn-cache
+    working_dir: /app
+    command: auto/dev-runtime-cmd
+    networks:
+      internal:
+    depends_on:
+      - runtime-api
+
+  runtime-api:
+    build: .
+    environment:
+      YARN_CACHE_FOLDER: /tmp/yarn-cache
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - yarn-cache:/tmp/yarn-cache
+    working_dir: /app
+    command: sh -c "yarn install && node runtime-api/server"
+    networks:
+      internal:
+
+networks:
+  internal:
+
+volumes:
+  node-modules:
+  yarn-cache:
