@@ -34,7 +34,6 @@ const request = (method, path, body) => {
       method,
       headers
     };
-    console.log(method, host, port, path);
     const req = http.request(options, (resp) => {
       const data = [];
 
