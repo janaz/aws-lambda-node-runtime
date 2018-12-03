@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -xe
+
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+cd "${DIR}/.."
+
+for R in us-east-2 us-east-1 us-west-1 us-west-2 \
+ap-south-1 ap-northeast-2 \
+ap-southeast-1 ap-southeast-2 ap-northeast-1 \
+ca-central-1 eu-central-1 eu-west-1 eu-west-2 \
+eu-west-3 sa-east-1 ; do
+  echo "Deploying in ${R}"
+  docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY -e AWS_SESSION_TOKEN --rm \
+    -w /app \
+    -v $(pwd):/app \
+    janaz/aws-cli:1.16.67-alpine \
+    lambda add-layer-version-permission \
+      --region "${R}" \
+      --layer-name node-10-runtime \
+      --version-number 1 \
+      --principal "*" \
+      --statement-id publish \
+      --action lambda:GetLayerVersion
+done
