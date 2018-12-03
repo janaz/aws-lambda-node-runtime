@@ -21,9 +21,11 @@ const request = (method, path, body) => {
     const headers = {
       'Accept': 'application/json',
     }
+    let payload;
     if (typeof body !== 'undefined') {
+      payload = JSON.stringify(body);
       headers['Content-Type'] = 'application/json',
-      headers['Content-Length'] = Buffer.byteLength(body)
+      headers['Content-Length'] = Buffer.byteLength(payload)
     }
     const options = {
       hostname: host,
@@ -59,8 +61,8 @@ const request = (method, path, body) => {
       req.abort();
       //this will call the `error` callback
     });
-    if (typeof body !== 'undefined') {
-      req.write(body);
+    if (typeof payload !== 'undefined') {
+      req.write(payload);
     }
     req.end();
   });
