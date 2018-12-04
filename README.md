@@ -17,6 +17,8 @@ It's easy to use this project and build Node.js runtime that will target any ver
 
 ## How to install?
 
+Prebuilt packages are available for use by any account in all AWS regions. Check the [releases page](https://github.com/janaz/aws-lambda-node-runtime/releases) for mor information.
+
 The following steps require `docker` and `docker-compose` to be installed on the system.
 
 The minimum `awscli` version is 1.16.67.
