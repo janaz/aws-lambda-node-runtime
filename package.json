@@ -13,6 +13,6 @@
     "express": "^4.16.4"
   },
   "dependencies": {
-    "aws-sdk": "2.368.0"
+    "aws-sdk": "2.374.0"
   }
 }
