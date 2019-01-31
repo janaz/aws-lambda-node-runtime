@@ -19,7 +19,7 @@ eu-west-3 sa-east-1 ; do
     lambda publish-layer-version \
       --region "${R}" \
       --layer-name node-10-runtime \
-      --description "nodejs-10.14.2 aws-cli-2.374.0" \
+      --description "nodejs-10.15.1 aws-cli-2.395.0" \
       --compatible-runtimes provided \
       --license-info Apache-2.0 \
       --zip-file fileb://stage/layer.zip
