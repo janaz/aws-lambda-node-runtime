@@ -1,4 +1,4 @@
-FROM node:10.14.0-slim@sha256:5aaef0bf16a700696c76e0902241aef6f4067e7e13255bddab835080b4a8ed1b
+FROM node:10.15.3-jessie-slim@sha256:83175f2607e3bf5059cb1a10e7c790735ae6ba1b71fa794c06336293da007291
 
 RUN apt-get update && apt-get install -y p7zip-full curl xz-utils && apt-get clean all
 
