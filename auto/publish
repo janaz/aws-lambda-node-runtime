@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -xe
 
@@ -8,21 +8,6 @@ cd "${DIR}/.."
 
 # https://docs.aws.amazon.com/general/latest/gr/lambda-service.html
 REGIONS="
-af-south-1
-ap-east-1
-ap-northeast-1
-ap-northeast-2
-ap-south-1
-ap-southeast-1
-ap-southeast-2
-ca-central-1
-eu-central-1
-eu-north-1
-eu-south-1
-eu-west-1
-eu-west-2
-eu-west-3
-me-south-1
 sa-east-1
 us-east-1
 us-east-2
@@ -30,6 +15,7 @@ us-west-1
 us-west-2
 "
 
+TMP="deployment-$(date +%s).txt"
 for R in $REGIONS ; do
   echo "Deploying in ${R}"
   docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY --rm \
@@ -39,8 +25,17 @@ for R in $REGIONS ; do
     lambda publish-layer-version \
       --region "${R}" \
       --layer-name node-14-runtime \
-      --description "nodejs-14.0.0 aws-cli-2.666.0" \
+      --description "nodejs-14.1.0 aws-cli-2.667.0" \
       --compatible-runtimes provided \
       --license-info Apache-2.0 \
       --zip-file fileb://stage/layer.zip
+done | tee "$TMP"
+
+set +x
+# Markdown release notes
+echo "|Region|Layer arn|"
+echo "|--|--|"
+cat "$TMP" | grep LayerVersionArn | cut -d '"' -f4 | while read L; do
+  R=$(echo $L | cut -d: -f4)
+  echo "|$R|\`$L\`|"
 done
