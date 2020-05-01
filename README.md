@@ -1,4 +1,4 @@
-# AWS Lambda NodeJS-10 LTS Runtime
+# AWS Lambda NodeJS-14 LTS Runtime
 
 AWS Lambda runtime API implemented in Node.js. The supported version is usually the latest LTS.
 
@@ -6,8 +6,8 @@ It's easy to use this project and build Node.js runtime that will target any ver
 
 ## Current versions
 
-* Node.js - **10.15.3**
-* aws-sdk - **2.422.0**
+* Node.js - **14.0.0**
+* aws-sdk - **2.666.0**
 
 ## Goals
 
@@ -39,8 +39,8 @@ Deploy the runtime layer using the following command:
 
 ```bash
 aws lambda publish-layer-version \
-  --layer-name node-10-runtime \
-  --description "nodejs-10.15.3 aws-cli-2.422.0" \
+  --layer-name node-14-runtime \
+  --description "nodejs-14.0.0 aws-cli-2.666.0" \
   --compatible-runtimes provided \
   --license-info Apache-2.0 \
   --zip-file fileb://stage/layer.zip
@@ -49,14 +49,14 @@ aws lambda publish-layer-version \
 The output will look like this:
 ```json
 {
-    "LayerVersionArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-10-runtime:1",
-    "Description": "nodejs-10.15.3 aws-cli-2.422.0",
+    "LayerVersionArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime:1",
+    "Description": "nodejs-14.0.0 aws-cli-2.666.0",
     "CreatedDate": "2018-12-02T22:32:00.572+0000",
-    "LayerArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-10-runtime",
+    "LayerArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime",
     "Content": {
         "CodeSize": 18104889,
         "CodeSha256": "VonrpX23FWJOmE4lvhpox+9PS9kuY4sng0o0wxNTROs=",
-        "Location": "https://awslambda-us-east-2-layers.s3.us-east-2.amazonaws.com/snapshots/356111732087/node-10-runtime-f3415c38-d865-46b6-ae42-009985092116?......"
+        "Location": "https://awslambda-us-east-2-layers.s3.us-east-2.amazonaws.com/snapshots/356111732087/node-14-runtime-f3415c38-d865-46b6-ae42-009985092116?......"
     },
     "Version": 1,
     "CompatibleRuntimes": [
@@ -72,7 +72,7 @@ You can share the layer with other AWS accounts by executing the following comma
 
 ```bash
 aws lambda add-layer-version-permission \
-  --layer-name node-10-runtime \
+  --layer-name node-14-runtime \
   --version-number 1 \
   --principal "*" \
   --statement-id publish \
@@ -84,7 +84,7 @@ Response:
 ```json
 {
     "RevisionId": "8b5b2e27-5013-4983-ac1a-9008dff90bac",
-    "Statement": "{\"Sid\":\"publish\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"lambda:GetLayerVersion\",\"Resource\":\"arn:aws:lambda:us-east-2:356111732087:layer:node-10-runtime:1\"}"
+    "Statement": "{\"Sid\":\"publish\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"lambda:GetLayerVersion\",\"Resource\":\"arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime:1\"}"
 }
 ```
 
@@ -103,11 +103,11 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
     ```bash
     aws lambda create-function \
       --region us-east-2 \
-      --function-name node-10-runtime-example \
+      --function-name node-14-runtime-example \
       --zip-file fileb://lambda.zip \
       --handler hello.handler \
       --runtime provided \
-      --layers "arn:aws:lambda:us-east-2:356111732087:layer:node-10-runtime:2" \
+      --layers "arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime:2" \
       --role arn:aws:iam::356111732087:role/lambda-role
       out.txt
     ```
@@ -119,10 +119,10 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
         "Layers": [
             {
                 "CodeSize": 18104889,
-                "Arn": "arn:aws:lambda:us-east-2:356111732087:layer:node-10-runtime:1"
+                "Arn": "arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime:1"
             }
         ],
-        "FunctionName": "node-10-runtime-example",
+        "FunctionName": "node-14-runtime-example",
         "LastModified": "2018-12-02T22:59:10.408+0000",
         "RevisionId": "32e7e8a1-b5ba-4388-b6be-596278e36126",
         "MemorySize": 128,
@@ -136,7 +136,7 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
         "CodeSha256": "shSeSmJZHv8Z0WmOAcFcHeSUGbRYRR1cFdbEudkSJHo=",
         "Description": "",
         "CodeSize": 340,
-        "FunctionArn": "arn:aws:lambda:us-east-2:356111732087:function:node-10-runtime-example",
+        "FunctionArn": "arn:aws:lambda:us-east-2:356111732087:function:node-14-runtime-example",
         "Handler": "hello.handler"
     }
     ```
@@ -146,7 +146,7 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
     ```bash
     aws lambda invoke \
       --region us-east-2 \
-      --function-name node-10-runtime-example \
+      --function-name node-14-runtime-example \
       --payload '{"hello":"world"}' \
       output.txt
 
