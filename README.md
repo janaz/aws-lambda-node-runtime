@@ -1,4 +1,4 @@
-# AWS Lambda NodeJS-14 LTS Runtime
+# AWS Lambda NodeJS-14 Runtime
 
 AWS Lambda runtime API implemented in Node.js. The supported version is usually the latest LTS.
 
