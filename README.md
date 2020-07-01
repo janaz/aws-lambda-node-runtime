@@ -6,8 +6,8 @@ It's easy to use this project and build Node.js runtime that will target any ver
 
 ## Current versions
 
-* Node.js - **14.4.0**
-* aws-sdk - **2.690.0**
+* Node.js - **14.5.0**
+* aws-sdk - **2.708.0**
 
 ## Goals
 
@@ -40,7 +40,7 @@ Deploy the runtime layer using the following command:
 ```bash
 aws lambda publish-layer-version \
   --layer-name node-14-runtime \
-  --description "nodejs-14.4.0 aws-cli-2.690.0" \
+  --description "nodejs-14.5.0 aws-cli-2.708.0" \
   --compatible-runtimes provided \
   --license-info Apache-2.0 \
   --zip-file fileb://stage/layer.zip
@@ -50,7 +50,7 @@ The output will look like this:
 ```json
 {
     "LayerVersionArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime:1",
-    "Description": "nodejs-14.4.0 aws-cli-2.690.0",
+    "Description": "nodejs-14.5.0 aws-cli-2.708.0",
     "CreatedDate": "2018-12-02T22:32:00.572+0000",
     "LayerArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-14-runtime",
     "Content": {
