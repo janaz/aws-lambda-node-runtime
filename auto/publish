@@ -31,6 +31,7 @@ us-west-2
 "
 
 TMP="deployment-$(date +%s).txt"
+LAYER_NAME=node-14-runtime
 for R in $REGIONS ; do
   echo "Deploying in ${R}"
   docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY --rm \
@@ -39,11 +40,36 @@ for R in $REGIONS ; do
     janaz/aws-cli:1.18.41-alpine \
     lambda publish-layer-version \
       --region "${R}" \
-      --layer-name node-14-runtime \
+      --layer-name "${LAYER_NAME}" \
       --description "nodejs-14.5.0 aws-cli-2.708.0" \
       --compatible-runtimes provided \
       --license-info Apache-2.0 \
       --zip-file fileb://stage/layer.zip
+
+    echo "Getting the version number"
+    layer_version=$(docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY --rm \
+      -w /app \
+      -v $(pwd):/app \
+      janaz/aws-cli:1.18.41-alpine \
+      lambda list-layer-versions \
+        --region "${R}" \
+        --layer-name "${LAYER_NAME}" \
+        --query 'max_by(LayerVersions, &Version).Version' \
+        --output text)
+
+    echo "Setting permissions for the layer"
+    docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY --rm \
+      -w /app \
+      -v $(pwd):/app \
+      janaz/aws-cli:1.18.41-alpine \
+      lambda add-layer-version-permission \
+        --region "${R}" \
+        --layer-name "${LAYER_NAME}" \
+        --version-number "${layer_version}" \
+        --statement-id share-with-all-accounts \
+        --principal '*' \
+        --action 'lambda:GetLayerVersion'
+
 done | tee "$TMP"
 
 set +x
