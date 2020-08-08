@@ -33,4 +33,4 @@ cp -a package.json package-lock.json src/* "${node_dir}"/bin/node "${stage_dir}/
 cd "${stage_dir}"
 npm ci --production
 rm -f package-lock.json package.json
-advzip -q -a -4 -p ../layer.zip *
+7za a -mx9 -r ../layer.zip .
