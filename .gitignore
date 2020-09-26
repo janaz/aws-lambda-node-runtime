@@ -1,5 +1,6 @@
 node_modules/
 stage/
 tmp/
+dist/
 *.zip
 deployment*.txt
