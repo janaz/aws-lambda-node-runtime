@@ -7,13 +7,15 @@ api.use(bodyParser.json());
 
 api.get('/2018-06-01/runtime/invocation/next', (_, res) => {
   console.log("invocation next");
-  res.set({
-    'lambda-runtime-aws-request-id': `aws-req-id-${Math.random()}`,
-    'lambda-runtime-deadline-ms': (new Date()).getTime() + 100,
-    'lambda-runtime-trace-id': `xray-trace-id-${Math.random()}`,
-    'lambda-runtime-invoked-function-arn': 'test-function-arn',
-  });
-  res.json({x: 42, y: 24});
+  setTimeout(() => {
+    res.set({
+      'lambda-runtime-aws-request-id': `aws-req-id-${Math.random()}`,
+      'lambda-runtime-deadline-ms': (new Date()).getTime() + 100,
+      'lambda-runtime-trace-id': `xray-trace-id-${Math.random()}`,
+      'lambda-runtime-invoked-function-arn': 'test-function-arn',
+    });
+    res.json({x: 42, y: 24});
+  }, 1000)
 });
 
 api.post('/2018-06-01/runtime/invocation/:id/error', (req, res) => {

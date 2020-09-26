@@ -6,8 +6,6 @@ const handler = (event, ctx) =>
     ctx,
     node_version: process.version,
     remaining_time: ctx.getRemainingTimeInMillis(),
-    aws: JSON.stringify(aws),
   })
 
 module.exports = { handler };
-

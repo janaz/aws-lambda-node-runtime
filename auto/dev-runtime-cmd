@@ -13,4 +13,5 @@ export AWS_LAMBDA_LOG_STREAM_NAME=test-log-stream-name
 
 cd "${DIR}/.."
 
-exec "./stage/bootstrap"
+sleep 5
+exec "./stage/work/bootstrap"

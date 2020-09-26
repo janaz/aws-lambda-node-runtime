@@ -24,7 +24,6 @@ interface Response {
 
 interface Config {
   _HANDLER: string
-  _X_AMZN_TRACE_ID: string
   LAMBDA_TASK_ROOT: string
   AWS_LAMBDA_RUNTIME_API: string
   AWS_LAMBDA_FUNCTION_NAME: string
@@ -32,6 +31,14 @@ interface Config {
   AWS_LAMBDA_FUNCTION_MEMORY_SIZE: number
   AWS_LAMBDA_LOG_GROUP_NAME: string
   AWS_LAMBDA_LOG_STREAM_NAME: string
+}
+interface LambdaHeaders {
+  'lambda-runtime-aws-request-id': string
+  'lambda-runtime-deadline-ms': string
+  'lambda-runtime-trace-id': string
+  'lambda-runtime-invoked-function-arn': string
+  'lambda-runtime-cognito-identity': string
+  'lambda-runtime-client-context': string
 }
 
 const getEnv = (item: keyof Config): string => {
@@ -45,7 +52,6 @@ const getEnv = (item: keyof Config): string => {
 const CONFIG: Promise<Config> = new Promise(r => {
   r({
     _HANDLER: getEnv('_HANDLER'),
-    _X_AMZN_TRACE_ID: getEnv('_X_AMZN_TRACE_ID'),
     LAMBDA_TASK_ROOT: getEnv('LAMBDA_TASK_ROOT'),
     AWS_LAMBDA_RUNTIME_API: getEnv('AWS_LAMBDA_RUNTIME_API'),
     AWS_LAMBDA_FUNCTION_NAME: getEnv('AWS_LAMBDA_FUNCTION_NAME'),
@@ -60,20 +66,17 @@ type LambdaHandler = (event: object, context: Context, callback: Callback) => Pr
 
 let _lambdaHandler: LambdaHandler | undefined = undefined;
 
-const getLambdaHandler = (cfg: Config): Promise<LambdaHandler> =>
-  Promise.resolve()
-    .then(() => {
-      if (typeof _lambdaHandler === 'undefined') {
-        const [modName, handlerName] = cfg._HANDLER.split('.');
-        _lambdaHandler = require(`${cfg.LAMBDA_TASK_ROOT}/${modName}`)[handlerName];
-      }
-      if (typeof _lambdaHandler === 'function') {
-         return _lambdaHandler;
-      } else {
-          throw new Error("Can't find the handler");
-      }
-    })
-
+const getLambdaHandler = async (cfg: Config): Promise<LambdaHandler> => {
+  if (typeof _lambdaHandler === 'undefined') {
+    const [modName, handlerName] = cfg._HANDLER.split('.');
+    _lambdaHandler = require(`${cfg.LAMBDA_TASK_ROOT}/${modName}`)[handlerName];
+  }
+  if (typeof _lambdaHandler === 'function') {
+    return _lambdaHandler;
+  } else {
+    throw new Error("Can't find the handler");
+  }
+};
 
 const request = (cfg: Config) => (method: string, path: string, body?: object): Promise<Response> => {
   return new Promise((resolve, reject) => {
@@ -197,71 +200,64 @@ const callHandler = (handler: LambdaHandler, obj: object, ctx: Context): Promise
   });
 }
 
-interface LambdaHeaders {
-  'lambda-runtime-aws-request-id': string
-  'lambda-runtime-deadline-ms': string
-  'lambda-runtime-trace-id': string
-  'lambda-runtime-invoked-function-arn': string
-  'lambda-runtime-cognito-identity': string
-  'lambda-runtime-client-context': string
-}
-
-const processNextRequest = (handler: LambdaHandler, cfg: Config): Promise<Response> => {
-  return fetchNext(cfg)
-    .then(({status, headers: _headers, body}) => {
-      const headers = (_headers as unknown ) as LambdaHeaders;
-      const json = JSON.parse(body.toString());
-      if (status !== 200) {
-        console.log(`Expected response with status 200, but received ${status}`);
-        console.log('Retrying...');
-        return;
-      }
-      const requestId = headers['lambda-runtime-aws-request-id'];
-      const deadlineMs = parseInt(headers['lambda-runtime-deadline-ms']);
-      process.env._X_AMZN_TRACE_ID = headers['lambda-runtime-trace-id'];
-      const ctx: Context = {
-        getRemainingTimeInMillis: () => {
-          return deadlineMs - (new Date()).getTime();
-        },
-        functionName: cfg.AWS_LAMBDA_FUNCTION_NAME,
-        functionVersion: cfg.AWS_LAMBDA_FUNCTION_VERSION,
-        invokedFunctionArn: headers['lambda-runtime-invoked-function-arn'],
-        memoryLimitInMB: cfg.AWS_LAMBDA_FUNCTION_MEMORY_SIZE,
-        awsRequestId: requestId,
-        logGroupName: cfg.AWS_LAMBDA_LOG_GROUP_NAME,
-        logStreamName: cfg.AWS_LAMBDA_LOG_STREAM_NAME,
-        callbackWaitsForEmptyEventLoop: false,
-        identity: headers['lambda-runtime-cognito-identity'],
-        clientContext: headers['lambda-runtime-client-context'],
-      }
-      return callHandler(handler, json, ctx).then(
-        (response) => {
-          return sendSuccessResponse(cfg, requestId, response);
-        },
-        (err) => {
-          return sendErrorResponse(cfg, requestId, err);
-        }
-      )
-      .catch((err) => {
-        console.error("Failed to send the response", err);
-      });
-    })
-    .then(() => processNextRequest(handler, cfg));
+const processNextRequest = async (handler: LambdaHandler, cfg: Config): Promise<Response | undefined> => {
+  const {status, headers: _headers, body} = await fetchNext(cfg)
+  const headers = (_headers as unknown ) as LambdaHeaders;
+  const json = JSON.parse(body.toString());
+  if (status !== 200) {
+    console.warn(`Expected response with status 200, but received ${status}. Retrying...`);
+    return processNextRequest(handler, cfg);
+  }
+  const requestId = headers['lambda-runtime-aws-request-id'];
+  const deadlineMs = parseInt(headers['lambda-runtime-deadline-ms']);
+  process.env._X_AMZN_TRACE_ID = headers['lambda-runtime-trace-id'];
+  const ctx: Context = {
+    getRemainingTimeInMillis: () => {
+      return deadlineMs - (new Date()).getTime();
+    },
+    functionName: cfg.AWS_LAMBDA_FUNCTION_NAME,
+    functionVersion: cfg.AWS_LAMBDA_FUNCTION_VERSION,
+    invokedFunctionArn: headers['lambda-runtime-invoked-function-arn'],
+    memoryLimitInMB: cfg.AWS_LAMBDA_FUNCTION_MEMORY_SIZE,
+    awsRequestId: requestId,
+    logGroupName: cfg.AWS_LAMBDA_LOG_GROUP_NAME,
+    logStreamName: cfg.AWS_LAMBDA_LOG_STREAM_NAME,
+    callbackWaitsForEmptyEventLoop: false,
+    identity: headers['lambda-runtime-cognito-identity'],
+    clientContext: headers['lambda-runtime-client-context'],
+  }
+  try {
+    const response = await callHandler(handler, json, ctx)
+    try {
+      await sendSuccessResponse(cfg, requestId, response);
+    } catch (e) {
+      console.error("Failed to send the success response", e);
+    }
+  } catch (err) {
+    try {
+      await sendErrorResponse(cfg, requestId, err);
+    } catch (e) {
+      console.error("Failed to send the error response", e);
+    }
+  }
+  return processNextRequest(handler, cfg)
 };
 
 //----- start here
 
-console.log("Runtime starting");
+const run = async () => {
+  const cfg = await CONFIG;
+  let handler: LambdaHandler | undefined
+  try {
+    handler = await getLambdaHandler(cfg);
+  } catch (err) {
+    sendErrorInit(cfg, err)
+    throw err;
+  }
+  await processNextRequest(handler, cfg);
+};
 
-CONFIG.then(cfg => {
-  return getLambdaHandler(cfg)
-    .then(handler => {
-      return processNextRequest(handler, cfg)
-    })
-    .catch(err => {
-      console.error("Init error", err);
-      return sendErrorInit(cfg, err);
-    })
-}).catch((err) => {
-  console.log("Runtime exiting", err);
-});
+console.log("Runtime starting");
+run()
+  .then(() => console.log("Runtime exiting"))
+  .catch((err: Error) => console.error("Runtime exiting", err))
