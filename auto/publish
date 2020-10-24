@@ -7,6 +7,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 cd "${DIR}/.."
 
 # https://docs.aws.amazon.com/general/latest/gr/lambda-service.html
+# [...$('#w430aab9d229b5b5 tbody').rows].map(e=>e.cells[1].childNodes[0].nodeValue).sort().join("\n")
 REGIONS="
 af-south-1
 ap-east-1
