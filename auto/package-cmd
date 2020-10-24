@@ -27,7 +27,7 @@ tar -xJ -f "${tmp_dir}/${node_archive}" --strip 1 -C "${node_dir}"
 #prepare staging dir
 rm -rf "${stage_dir}"
 mkdir -p "${stage_dir}"
-cp -a tsconfig.json package.json package-lock.json src/bootstrap src/ "${node_dir}"/bin/node "${stage_dir}/"
+cp -a tsconfig.json package.json package-lock.json src/bootstrap src/ "${node_dir}"/bin/node "${stage_dir}"
 
 #compile typescript
 cd "${stage_dir}"

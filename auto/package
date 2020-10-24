@@ -2,8 +2,8 @@
 
 set -ex
 
-export NODE_VERSION=14.13.0
-export SHA256=8dbf2869033b315de8369405bc3cd5a19fb11afc824fe616640e2743a9a84cc4
+export NODE_VERSION=15.0.1
+export SHA256=cc9c3eed21755b490e5333ccab208ce15b539c35f64a764eeeae77c58746a7ff
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
