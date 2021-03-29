@@ -61,7 +61,7 @@ const CONFIG: Promise<Config> = new Promise(r => {
     AWS_LAMBDA_RUNTIME_API: getEnv('AWS_LAMBDA_RUNTIME_API'),
     AWS_LAMBDA_FUNCTION_NAME: getEnv('AWS_LAMBDA_FUNCTION_NAME'),
     AWS_LAMBDA_FUNCTION_VERSION: getEnv('AWS_LAMBDA_FUNCTION_VERSION'),
-    AWS_LAMBDA_FUNCTION_MEMORY_SIZE: Number.parseInt(getEnv('AWS_LAMBDA_FUNCTION_MEMORY_SIZE')),
+    AWS_LAMBDA_FUNCTION_MEMORY_SIZE: Number.parseInt(getEnv('AWS_LAMBDA_FUNCTION_MEMORY_SIZE'), 10),
     AWS_LAMBDA_LOG_GROUP_NAME: getEnv('AWS_LAMBDA_LOG_GROUP_NAME'),
     AWS_LAMBDA_LOG_STREAM_NAME: getEnv('AWS_LAMBDA_LOG_STREAM_NAME'),
   });
@@ -215,7 +215,7 @@ const processNextRequest = async (handler: LambdaHandler, cfg: Config): Promise<
     return processNextRequest(handler, cfg);
   }
   const requestId = headers['lambda-runtime-aws-request-id'];
-  const deadlineMs = parseInt(headers['lambda-runtime-deadline-ms']);
+  const deadlineMs = Number.parseInt(headers['lambda-runtime-deadline-ms'], 10);
   process.env._X_AMZN_TRACE_ID = headers['lambda-runtime-trace-id'];
   const ctx: Context = {
     getRemainingTimeInMillis: () => {
