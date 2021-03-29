@@ -1,5 +1,10 @@
 import http from 'http';
 
+const agent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 1,
+});
+
 type Callback = (err: null | Error, value: object) => void;
 
 interface Context {
@@ -93,6 +98,7 @@ const request = (cfg: Config) => (method: string, path: string, body?: object): 
     const options: http.RequestOptions = {
       hostname: host,
       port: port || 80,
+      agent,
       path,
       method,
       headers
