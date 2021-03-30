@@ -27,17 +27,11 @@ tar -xJ -f "${tmp_dir}/${node_archive}" --strip 1 -C "${node_dir}"
 #prepare staging dir
 rm -rf "${stage_dir}"
 mkdir -p "${stage_dir}"
-cp -a tsconfig.json package.json package-lock.json src/bootstrap src/ "${node_dir}"/bin/node "${stage_dir}"
-
-#compile typescript
-cd "${stage_dir}"
-npm ci
-npm run compile
+cp -a package.json package-lock.json src/* "${node_dir}"/bin/node "${stage_dir}"
 
 #install deps and create archive
+cd "${stage_dir}"
 npm ci --production
-rm -rf src/ package-lock.json package.json tsconfig.json
-mv dist/compile/* .
-rm -rf dist/
+rm -rf package-lock.json package.json
 rm -f ../layer.zip
 7za a -mx9 -r ../layer.zip .

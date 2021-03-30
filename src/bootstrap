@@ -10,4 +10,4 @@ cd "${LAMBDA_TASK_ROOT}"
 
 # AWS_LAMBDA_FUNCTION_MEMORY_SIZE
 
-exec "${DIR}/node" "${DIR}/runtime.js"
+exec "${DIR}/node" "${DIR}/start.js"

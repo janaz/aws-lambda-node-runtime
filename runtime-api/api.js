@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 
 const api = express();
 
-api.use(bodyParser.json());
+api.use(express.json());
 
 api.get('/2018-06-01/runtime/invocation/next', (_, res) => {
   console.log("invocation next");
