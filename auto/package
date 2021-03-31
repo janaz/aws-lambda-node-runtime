@@ -3,7 +3,6 @@
 set -ex
 
 export NODE_VERSION=15.12.0
-export SHA256=3892b4058cf12823c6cf39e4a3e9ce6da3f908cbfd211ddfc0a9df73eecd8bdc
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
@@ -11,5 +10,5 @@ cd "${DIR}/.."
 
 docker-compose build
 docker-compose run --rm \
-  -e NODE_VERSION -e SHA256 \
-  package
+  -e NODE_VERSION \
+  ci auto/package-cmd

@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  package:
+  ci:
     build: .
     environment:
       NPM_CONFIG_CACHE: /tmp/npm-cache
@@ -10,7 +10,6 @@ services:
       - node-modules:/app/node_modules
       - npm-cache:/tmp/npm-cache
     working_dir: /app
-    command: auto/package-cmd
 
   dev:
     build: .
