@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 
 const api = express();
 
@@ -13,6 +12,29 @@ api.get('/2018-06-01/runtime/invocation/next', (_, res) => {
       'lambda-runtime-deadline-ms': (new Date()).getTime() + 100,
       'lambda-runtime-trace-id': `xray-trace-id-${Math.random()}`,
       'lambda-runtime-invoked-function-arn': 'test-function-arn',
+      'lambda-runtime-client-context': JSON.stringify({
+        client: {
+          installation_id: 'installation_id',
+          app_title: 'app_title',
+          app_version_name: 'app_version_name',
+          app_version_code: 'app_version_code',
+          app_package_name: 'app_package_name',
+        },
+        env: {
+          platform_version: 'platform_version',
+          platform: 'platform',
+          make: 'make',
+          model: 'model',
+          locale: 'locale',
+        },
+        custom: {
+          key: 'value',
+        },
+      }),
+      'lambda-runtime-cognito-identity': JSON.stringify({
+        cognitoIdentityId: 'cognitoIdentityIdExample',
+        cognitoIdentityPoolId: 'cognitoIdentityPoolIdExample'
+      }),
     });
     res.json({x: 42, y: 24});
   }, 1000)

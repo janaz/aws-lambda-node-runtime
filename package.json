@@ -5,7 +5,6 @@
   "author": "Tomasz Janowski <janaz9@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "tsc",
     "start-api": "node runtime-api/server",
     "start-runtime": "./auto/dev-runtime"
   },
