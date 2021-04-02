@@ -42,7 +42,7 @@ for R in $REGIONS ; do
     lambda publish-layer-version \
       --region "${R}" \
       --layer-name "${LAYER_NAME}" \
-      --description "nodejs-15.13.0 aws-cli-2.877.0" \
+      --description "nodejs-15.13.0 aws-cli-2.878.0" \
       --compatible-runtimes provided \
       --license-info Apache-2.0 \
       --zip-file fileb://stage/layer.zip
