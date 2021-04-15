@@ -6,14 +6,14 @@ It's easy to use this project and build Node.js runtime that will target any ver
 
 ## Current versions
 
-* Node.js - **15.13.0**
-* aws-sdk - **2.878.0**
+* Node.js - **15.14.0**
+* aws-sdk - **2.887.0**
 
 ## Goals
 
 * Provide always up-to-date Node.js execution environment.
 * Include the most recent `aws-cli` library.
-* MAke the runtime environment compatible with the default node6.10 and node8.10 environments
+* MAke the runtime environment compatible with the default node12.x and node14.x environments
 
 ## How to install?
 
@@ -40,7 +40,7 @@ Deploy the runtime layer using the following command:
 ```bash
 aws lambda publish-layer-version \
   --layer-name node-15-runtime \
-  --description "nodejs-15.13.0 aws-cli-2.878.0" \
+  --description "nodejs-15.14.0 aws-cli-2.887.0" \
   --compatible-runtimes provided \
   --license-info Apache-2.0 \
   --zip-file fileb://stage/layer.zip
@@ -50,7 +50,7 @@ The output will look like this:
 ```json
 {
     "LayerVersionArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime:1",
-    "Description": "nodejs-15.13.0 aws-cli-2.878.0",
+    "Description": "nodejs-15.14.0 aws-cli-2.887.0",
     "CreatedDate": "2018-12-02T22:32:00.572+0000",
     "LayerArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime",
     "Content": {

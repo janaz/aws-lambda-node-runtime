@@ -2,7 +2,7 @@
 
 set -ex
 
-export NODE_VERSION=15.13.0
+export NODE_VERSION=15.14.0
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
