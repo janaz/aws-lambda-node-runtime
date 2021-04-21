@@ -32,7 +32,7 @@ us-west-2
 "
 
 TMP="deployment-$(date +%s).txt"
-LAYER_NAME=node-15-runtime
+LAYER_NAME=node-16-runtime
 for R in $REGIONS ; do
   echo "Deploying in ${R}"
   docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY --rm \
@@ -42,7 +42,7 @@ for R in $REGIONS ; do
     lambda publish-layer-version \
       --region "${R}" \
       --layer-name "${LAYER_NAME}" \
-      --description "nodejs-15.14.0 aws-cli-2.887.0" \
+      --description "nodejs-16.0.0 aws-cli-2.889.0" \
       --compatible-runtimes provided \
       --license-info Apache-2.0 \
       --zip-file fileb://stage/layer.zip

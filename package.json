@@ -13,6 +13,6 @@
   },
   "dependencies": {
     "aws-lambda-node-runtime": "0.1.0",
-    "aws-sdk": "^2.887.0"
+    "aws-sdk": "^2.889.0"
   }
 }

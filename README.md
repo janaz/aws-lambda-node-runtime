@@ -1,4 +1,4 @@
-# AWS Lambda NodeJS-15 Runtime
+# AWS Lambda NodeJS-16 Runtime
 
 AWS Lambda runtime API implemented in Node.js. The supported version is usually the latest LTS.
 
@@ -6,14 +6,14 @@ It's easy to use this project and build Node.js runtime that will target any ver
 
 ## Current versions
 
-* Node.js - **15.14.0**
-* aws-sdk - **2.887.0**
+* Node.js - **16.0.0**
+* aws-sdk - **2.889.0**
 
 ## Goals
 
-* Provide always up-to-date Node.js execution environment.
+* Provide always up-to-date Node.js execution environment as a Lambda runtime layer and a Lambda container image.
 * Include the most recent `aws-cli` library.
-* MAke the runtime environment compatible with the default node12.x and node14.x environments
+* Make the runtime environment compatible with the default node12.x and node14.x environments
 
 ## How to install?
 
@@ -39,8 +39,8 @@ Deploy the runtime layer using the following command:
 
 ```bash
 aws lambda publish-layer-version \
-  --layer-name node-15-runtime \
-  --description "nodejs-15.14.0 aws-cli-2.887.0" \
+  --layer-name node-16-runtime \
+  --description "nodejs-16.0.0 aws-cli-2.889.0" \
   --compatible-runtimes provided \
   --license-info Apache-2.0 \
   --zip-file fileb://stage/layer.zip
@@ -49,14 +49,14 @@ aws lambda publish-layer-version \
 The output will look like this:
 ```json
 {
-    "LayerVersionArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime:1",
-    "Description": "nodejs-15.14.0 aws-cli-2.887.0",
+    "LayerVersionArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-16-runtime:1",
+    "Description": "nodejs-16.0.0 aws-cli-2.889.0",
     "CreatedDate": "2018-12-02T22:32:00.572+0000",
-    "LayerArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime",
+    "LayerArn": "arn:aws:lambda:us-east-2:356111732087:layer:node-16-runtime",
     "Content": {
         "CodeSize": 18104889,
         "CodeSha256": "VonrpX23FWJOmE4lvhpox+9PS9kuY4sng0o0wxNTROs=",
-        "Location": "https://awslambda-us-east-2-layers.s3.us-east-2.amazonaws.com/snapshots/356111732087/node-15-runtime-f3415c38-d865-46b6-ae42-009985092116?......"
+        "Location": "https://awslambda-us-east-2-layers.s3.us-east-2.amazonaws.com/snapshots/356111732087/node-16-runtime-f3415c38-d865-46b6-ae42-009985092116?......"
     },
     "Version": 1,
     "CompatibleRuntimes": [
@@ -72,7 +72,7 @@ You can share the layer with other AWS accounts by executing the following comma
 
 ```bash
 aws lambda add-layer-version-permission \
-  --layer-name node-15-runtime \
+  --layer-name node-16-runtime \
   --version-number 1 \
   --principal "*" \
   --statement-id publish \
@@ -84,7 +84,7 @@ Response:
 ```json
 {
     "RevisionId": "8b5b2e27-5013-4983-ac1a-9008dff90bac",
-    "Statement": "{\"Sid\":\"publish\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"lambda:GetLayerVersion\",\"Resource\":\"arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime:1\"}"
+    "Statement": "{\"Sid\":\"publish\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Action\":\"lambda:GetLayerVersion\",\"Resource\":\"arn:aws:lambda:us-east-2:356111732087:layer:node-16-runtime:1\"}"
 }
 ```
 
@@ -103,11 +103,11 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
     ```bash
     aws lambda create-function \
       --region us-east-2 \
-      --function-name node-15-runtime-example \
+      --function-name node-16-runtime-example \
       --zip-file fileb://lambda.zip \
       --handler hello.handler \
       --runtime provided \
-      --layers "arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime:2" \
+      --layers "arn:aws:lambda:us-east-2:356111732087:layer:node-16-runtime:2" \
       --role arn:aws:iam::356111732087:role/lambda-role
       out.txt
     ```
@@ -119,10 +119,10 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
         "Layers": [
             {
                 "CodeSize": 18104889,
-                "Arn": "arn:aws:lambda:us-east-2:356111732087:layer:node-15-runtime:1"
+                "Arn": "arn:aws:lambda:us-east-2:356111732087:layer:node-16-runtime:1"
             }
         ],
-        "FunctionName": "node-15-runtime-example",
+        "FunctionName": "node-16-runtime-example",
         "LastModified": "2018-12-02T22:59:10.408+0000",
         "RevisionId": "32e7e8a1-b5ba-4388-b6be-596278e36126",
         "MemorySize": 128,
@@ -136,7 +136,7 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
         "CodeSha256": "shSeSmJZHv8Z0WmOAcFcHeSUGbRYRR1cFdbEudkSJHo=",
         "Description": "",
         "CodeSize": 340,
-        "FunctionArn": "arn:aws:lambda:us-east-2:356111732087:function:node-15-runtime-example",
+        "FunctionArn": "arn:aws:lambda:us-east-2:356111732087:function:node-16-runtime-example",
         "Handler": "hello.handler"
     }
     ```
@@ -146,7 +146,7 @@ Let's assume that your lambda function is packaged as `lambda.zip` file and the 
     ```bash
     aws lambda invoke \
       --region us-east-2 \
-      --function-name node-15-runtime-example \
+      --function-name node-16-runtime-example \
       --payload '{"hello":"world"}' \
       output.txt
 
@@ -170,10 +170,7 @@ The context object is compatible with [the default node environments](https://do
 * `awsRequestId` – The identifier of the invocation request.
 * `logGroupName` – The log group for the function.
 * `logStreamName` – The log stream for the function instance.
-* `callbackWaitsForEmptyEventLoop` – Set to false to send the response right away when the callback executes, instead of waiting for the Node.js event loop to be empty. If false, any outstanding events will continue to run during the next invocation.
-
-### Not yet supported properties
-
+* `callbackWaitsForEmptyEventLoop` – Set to false to send the response right away when the callback executes, instead of waiting for the Node.js event loop to be empty.
 * `identity` - Information about the Amazon Cognito identity that authorized the request.
 * `clientContext` - Client context provided to the Lambda invoker by the client application.
 
@@ -201,3 +198,22 @@ AWS_LAMBDA_LOG_GROUP_NAME AWS_LAMBDA_LOG_STREAM_NAME|Yes|The name of the Amazon 
 |LD_LIBRARY_PATH|No|/lib64:/usr/lib64:$LAMBDA_RUNTIME_DIR:$LAMBDA_RUNTIME_DIR/lib:$LAMBDA_TASK_ROOT:$LAMBDA_TASK_ROOT/lib:/opt/lib|
 |NODE_PATH|No|/opt/node_modules|
 |AWS_LAMBDA_RUNTIME_API|Yes|(custom runtime) The host and port of the [runtime API](https://docs.aws.amazon.com/lambda/latest/dg/runtimes-api.html).|
+
+## The base container image
+
+The releases include a base Docker image that is compatible with the Lambda Container runtime and it's compatible with the Node.js Lambda runtime.
+
+### Using the base image
+
+The example below assumes that the Dockerfile is in the root folder of the Lambda project and there's an `index.js` file that exports the handler function called `handler`.
+
+```Dockerfile
+FROM janaz/aws-lambda-node-runtime:test-1
+
+COPY . ${LAMBDA_TASK_ROOT}
+RUN npm install
+
+CMD ["index.handler"]
+```
+
+The image created from that `Dockerfile` should be uploaded to your ECR registry and referenced in the Lambda configuration.

@@ -1,6 +1,6 @@
 
-ARG NODE_VERSION=15.14.0
-ARG AWS_SDK_VERSION=2.887.0
+ARG NODE_VERSION=16.0.0
+ARG AWS_SDK_VERSION=2.889.0
 ARG AWS_LAMBDA_NODE_RUNTIME_VERSION=0.1.0
 
 FROM node:${NODE_VERSION}-buster-slim
@@ -17,7 +17,5 @@ RUN mkdir ${BOOTSTRAP_DIR} && \
   npm install --no-save -g aws-lambda-node-runtime@${AWS_LAMBDA_NODE_RUNTIME_VERSION}
 
 WORKDIR ${LAMBDA_TASK_ROOT}
-# COPY hello.js ${LAMBDA_TASK_ROOT}/
 
 ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-node-runtime"]
-# CMD ["hello.handler"]
