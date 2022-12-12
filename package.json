@@ -9,7 +9,7 @@
     "start-runtime": "./auto/dev-runtime"
   },
   "devDependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.3"
   },
   "dependencies": {
     "aws-lambda-node-runtime": "0.1.0",
